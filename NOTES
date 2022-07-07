@@ -1,0 +1,7 @@
+needed to change: http://localhost:4000/broadcast.html
+to: http://localhost:8000/broadcast.html
+
+because server.js complains 4000 is in use.
+    o Why is it in use?
+    o How does changing it in just signal.js sufficicent?
+
