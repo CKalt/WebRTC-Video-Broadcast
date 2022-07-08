@@ -1,3 +1,8 @@
+function log_stamp(str) {
+    msg = new Date().toISOString() + ":" + str;
+    console.log(msg);
+}
+
 const peerConnections = {};
 const config = {
   iceServers: [
@@ -15,10 +20,12 @@ const config = {
 const socket = io.connect(window.location.origin);
 
 socket.on("answer", (id, description) => {
+  log_stamp("broadcast.socket: on answer");
   peerConnections[id].setRemoteDescription(description);
 });
 
 socket.on("watcher", id => {
+  log_stamp("broadcast.socket: on watcher");
   const peerConnection = new RTCPeerConnection(config);
   peerConnections[id] = peerConnection;
 
@@ -26,11 +33,13 @@ socket.on("watcher", id => {
   stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
 
   peerConnection.onicecandidate = event => {
+    log_stamp("broadcast.peerConnection: on icecandidate");
     if (event.candidate) {
       socket.emit("candidate", id, event.candidate);
     }
   };
 
+  log_stamp("broadcast: calling peerConnection.createOffer()");
   peerConnection
     .createOffer()
     .then(sdp => peerConnection.setLocalDescription(sdp))
@@ -40,15 +49,18 @@ socket.on("watcher", id => {
 });
 
 socket.on("candidate", (id, candidate) => {
+  log_stamp("broadcast.socket: on candidate");
   peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
 });
 
 socket.on("disconnectPeer", id => {
+  log_stamp("broadcast.socket: on disconnectPeer");
   peerConnections[id].close();
   delete peerConnections[id];
 });
 
 window.onunload = window.onbeforeunload = () => {
+  log_stamp("broadcast.window: on beforeunload");
   socket.close();
 };
 
