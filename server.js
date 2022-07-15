@@ -1,5 +1,28 @@
+console.log('Starting WebRTC server.');
+var request = require('request');
+
+function elog(msg) {
+    //Custom Header pass
+    var headersOpt = {
+        "content-type": "application/json",
+    };
+    request(
+            {
+            method:'post',
+            uri: 'http://localhost:3000/log',
+            //uri: 'http://localhost:8080/echo',
+            body: { 'message': msg },
+            headers: headersOpt,
+            json: true,
+        }, function (error, response, body) {
+            //Print the Response
+            console.log(body);
+    });
+}
+
 function log_stamp(str) {
-    msg = new Date().toISOString() + ":" + str;
+    msg = new Date().toISOString() + ":server." + str;
+    elog(msg);
     console.log(msg);
 }
 
