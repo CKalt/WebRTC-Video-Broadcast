@@ -1,6 +1,6 @@
 function log_stamp(str) {
     msg = new Date().toISOString() + ":" + str;
-    console.log(msg);
+    elog(msg);
 }
 
 const peerConnections = {};
